@@ -1,0 +1,16 @@
+from typing import List
+from pydantic import BaseModel, Field
+from typing import Optional
+
+class ReviewSchema(BaseModel):
+    user: str
+    rating: int = Field(..., ge=1, le=5)
+    comment: Optional[str] = None
+
+
+class ProductSchema(BaseModel):
+    name: str
+    description: Optional[str] = None
+    price :float = Field(..., gt=0)
+    stock: int = Field(..., ge=0) 
+    reviews: List[ReviewSchema] = []
