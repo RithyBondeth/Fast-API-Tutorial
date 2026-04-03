@@ -1,5 +1,6 @@
 from typing import Optional
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -51,3 +52,29 @@ def findOneProduct(productId: int):
 @app.get("/keyword-search")
 def search(keyword: Optional[str] = None):
    return { "keyword": keyword }
+
+
+# Request Body
+class UserModel(BaseModel):
+    name: str
+    age: int
+    email: str
+    password: Optional[str] = None    
+
+@app.post("/users")
+def createUSer(user: UserModel):
+    return { "message": "User created successfully", "user": user }
+
+
+
+class ProductModel(BaseModel): 
+    name: str
+    qty: int
+    description: Optional[str] = "No description"
+    price: float
+    
+@app.post("/product/create")
+def createProduct(product: ProductModel):
+    return { "message": "Product created successfully", "product": product }
+
+
