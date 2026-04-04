@@ -1,0 +1,9 @@
+{
+    "editor.formatOnSave": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSave": true
+    },
+    "python.formatting.provider": "black",
+    "python.formatting.blackPath": "./venv/bin/black"
+}
