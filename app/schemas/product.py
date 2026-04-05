@@ -22,11 +22,23 @@ class ProductSchema(BaseModel):
         arbitrary_types_allowed=True,
     )
 
+class ProductUpdateSchema(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    stock: Optional[int] = None
+    reviews: Optional[List[ReviewSchema]] = []
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
+    )
+
 class AllProductResponseSchema(BaseModel):
     message: str
-    data: List[ProductSchema]
+    data: Optional[List[ProductSchema]] = []
 
 
 class SingleProductResponseSchema(BaseModel):
     message: str
-    data: ProductSchema
+    data: Optional[ProductSchema] = None
