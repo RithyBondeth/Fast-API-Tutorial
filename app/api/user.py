@@ -46,3 +46,12 @@ async def update_user_by_id(user_id: str, user: UserUpdateSchema):
     updated_user = await db.users.find_one({"_id": ObjectId(user_id)})
     return {"message": f"Update user with ID {user_id} Successfully", "data": updated_user}
     
+@router.delete("/{user_id}", response_model=UserResponseSchema)
+async def delete_user_by_id(user_id: str):
+    if not ObjectId.is_valid(user_id):
+        raise HTTPException(status_code=400, detail="Invalid user ID format")
+
+    result = await db.users.delete_one({"_id": ObjectId(user_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": f"Delete user with ID {user_id} Successfully", "data": None}

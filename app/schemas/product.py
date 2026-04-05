@@ -1,6 +1,6 @@
-from typing import List
-from pydantic import BaseModel, Field
-from typing import Optional
+from typing import List, Optional
+from pydantic import BaseModel, Field, ConfigDict
+from app.schemas.user import PyObjectId
 
 
 class ReviewSchema(BaseModel):
@@ -10,15 +10,19 @@ class ReviewSchema(BaseModel):
 
 
 class ProductSchema(BaseModel):
-    id: Optional[int] = None
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
     name: str
     description: Optional[str] = None
     price: float = Field(..., gt=0)
     stock: int = Field(..., ge=0)
     reviews: List[ReviewSchema] = []
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
+    )
 
-class ProductResponseSchema(BaseModel):
+class AllProductResponseSchema(BaseModel):
     message: str
     data: List[ProductSchema]
 

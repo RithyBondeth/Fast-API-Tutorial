@@ -29,7 +29,7 @@ class UserUpdateSchema(BaseModel):
 
 class UserResponseSchema(BaseModel): 
     message: str
-    data: UserSchema
+    data: Optional[UserSchema] = None
 
 class AllUserResponseSchema(BaseModel):
     message: str
