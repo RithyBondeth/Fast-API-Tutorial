@@ -33,15 +33,25 @@ def get_product_by_id(product_id: int):
         "data": products[product_id -1],
     }
 
-@router.put("/{product_id}")
+@router.put("/{product_id}", response_model=SingleProductResponseSchema)
 def update_product_by_id(product_id: int, product: ProductSchema):
     if(product_id > len(products)):
         raise HTTPException(status_code=404, detail="Product not found")
     
     products[product_id - 1] = product
     product.id = product_id
-    
+
     return {
         "message": f"Update Product with ID {product_id} Successfully",
         "data": products[product_id -1],
+    }
+
+@router.delete("/{product_id}")
+def delete_product_by_id(product_id: int):
+    if(product_id > len(products)):
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    products.pop(product_id - 1)
+    return {
+        "message": f"Delete Product with ID {product_id} Successfully",
     }
