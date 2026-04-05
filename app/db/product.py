@@ -1,5 +1,5 @@
 from typing import List
-from schemas.product import ProductSchema
+from app.schemas.product import ProductSchema
 
 products: List[ProductSchema] = [
     {
