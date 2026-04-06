@@ -1,47 +1,30 @@
-from fastapi import FastAPI, Request
-from fastapi.exceptions import HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 from app.api.v1.api import api_router
-from app.core.exceptions import AppBaseException
+from app.core.logging import setup_logging
+from app.core.middleware import LoggingMiddleware
+from app.core.handlers import register_exception_handlers
 
-app = FastAPI(title="FastAPI MongoDB Tutorial", version="1.0.0")
+# 1. Initialize logging
+logger = setup_logging()
 
+# 2. Initialize FastAPI app
+app = FastAPI(
+    title="FastAPI MongoDB Tutorial", 
+    version="1.0.0",
+    docs_url="/docs",  # Explicitly standard
+    redoc_url="/redoc"
+)
+
+# 3. Add Middleware
+app.add_middleware(LoggingMiddleware)
+
+# 4. Register Exception Handlers
+register_exception_handlers(app)
+
+# 5. Include API Routers
 app.include_router(api_router, prefix="/api/v1")
 
 
-@app.exception_handler(AppBaseException)
-async def app_base_exception_handler(request: Request, exc: AppBaseException):
-    """
-    This handles all our custom exceptions (NotFound, Unauthorized, etc.)
-    """
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"message": exc.message, "status": "error"},
-    )
-
-
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
-    """
-    This handles standard FastAPI / Starlette HTTP exceptions.
-    """
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"message": exc.detail, "status": "error"},
-    )
-
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    """
-    This is a catch-all for any unexpected errors.
-    It prevents the internal server error (500) from leaking details.
-    """
-    # In a real app, you would log 'exc' here.
-    return JSONResponse(
-        status_code=500,
-        content={
-            "message": "An unexpected error occurred. Please try again later.",
-            "status": "error",
-        },
-    )
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the FastAPI MongoDB Tutorial API!"}
