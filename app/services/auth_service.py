@@ -21,12 +21,12 @@ class AuthService:
 
         # 3. Insert user into database
         result = await db.users.insert_one(new_user)
-        
+
         # 4. Return clean response (exclude sensitive/non-serializable data)
         new_user["id"] = str(result.inserted_id)
         new_user.pop("password", None)
         new_user.pop("_id", None)  # MongoDB ObjectId is not JSON-serializable
-        
+
         return {"message": "Registered Successfully", "data": new_user}
 
     async def login(self, login_data: LoginSchema):

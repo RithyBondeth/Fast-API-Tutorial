@@ -22,6 +22,7 @@ class ProductSchema(BaseModel):
         arbitrary_types_allowed=True,
     )
 
+
 class ProductUpdateSchema(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
@@ -33,6 +34,7 @@ class ProductUpdateSchema(BaseModel):
         populate_by_name=True,
         arbitrary_types_allowed=True,
     )
+
 
 class AllProductResponseSchema(BaseModel):
     message: str
