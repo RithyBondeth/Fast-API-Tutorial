@@ -1,15 +1,17 @@
 from app.schemas.product import ProductUpdateSchema
 from bson import ObjectId
 from app.schemas.product import AllProductResponseSchema
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from app.schemas.product import ProductSchema, SingleProductResponseSchema
 from app.core.database import db
+from app.core.deps import get_current_user
 
-router = APIRouter(prefix="/products", tags=["products"])
+router = APIRouter(prefix="/products", tags=["products"], dependencies=[Depends(get_current_user)])
 
 
 @router.post("", response_model=SingleProductResponseSchema)
 async def create_product(product: ProductSchema):
+    # This route is now protected! Only logged-in users can reach here.
     product_data = product.model_dump(by_alias=True, exclude_unset=True)
     if product_data.get("_id") is None:
         product_data.pop("_id", None)
