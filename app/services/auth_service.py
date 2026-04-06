@@ -1,7 +1,7 @@
 import jwt
 from bson import ObjectId
 from app.schemas.auth import LoginSchema, RegisterSchema, RefreshTokenSchema
-from app.core.database import db
+from app.db.mongodb import db
 from app.core.security import (
     hash_password,
     verify_password,

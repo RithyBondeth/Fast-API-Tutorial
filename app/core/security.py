@@ -1,15 +1,16 @@
 from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta
-from app.core.config import Config
+from app.core.config import settings
 
-SECRET_KEY = Config.SECRET_KEY
-ALGORITHM = Config.ALGORITHM
+# Load keys from our validated settings
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto",
-    truncate_error=False,  # This allows passwords > 72 chars by truncating them
+    truncate_error=False,
 )
 
 

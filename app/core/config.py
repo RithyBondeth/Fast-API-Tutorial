@@ -1,9 +1,19 @@
-import os
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
 
-class Config:
-    MONGO_URL = os.getenv("MONGO_URL")
-    SECRET_KEY = os.getenv("SECRET_KEY")
-    ALGORITHM = os.getenv("ALGORITHM")
+class Settings(BaseSettings):
+    """
+    Application settings powered by Pydantic.
+    It automatically reads from your .env file and validates the data types.
+    """
+
+    MONGO_URL: str
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+
+    # This special config tells Pydantic to look for a .env file
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+
+# We create a single instance of settings to be used throughout the app
+settings = Settings()

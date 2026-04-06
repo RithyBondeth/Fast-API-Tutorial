@@ -6,7 +6,7 @@ from app.schemas.auth import (
 )
 from app.services.auth_service import AuthService
 from fastapi import APIRouter, Depends
-from app.core.deps import get_current_user
+from app.core.dependencies import get_current_user
 
 router = APIRouter()
 auth_service = AuthService()

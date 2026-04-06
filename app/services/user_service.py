@@ -1,6 +1,6 @@
 from typing import Optional, List
 from bson import ObjectId
-from app.core.database import db
+from app.db.mongodb import db
 from app.schemas.user import UserSchema, UserUpdateSchema
 from app.core.exceptions import NotFoundException, BadRequestException
 

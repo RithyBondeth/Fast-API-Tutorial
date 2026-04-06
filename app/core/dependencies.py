@@ -3,7 +3,7 @@ from app.core.security import ALGORITHM
 from app.core.security import SECRET_KEY
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Depends, HTTPException
-from app.core.database import db
+from app.db.mongodb import db
 import jwt
 
 

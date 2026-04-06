@@ -6,7 +6,7 @@ from app.schemas.user import (
     UserUpdateSchema,
 )
 from app.services.user_service import UserService
-from app.core.deps import require_role
+from app.core.dependencies import require_role
 
 router = APIRouter()
 user_service = UserService()
