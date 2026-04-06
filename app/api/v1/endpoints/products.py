@@ -43,9 +43,6 @@ async def get_all_products(
 )
 async def get_product_by_id(product_id: str):
     product = await product_service.get_product_by_id(product_id)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found or invalid ID")
-
     return {
         "message": f"Get product with ID {product_id} Successfully",
         "data": product,
@@ -59,9 +56,6 @@ async def get_product_by_id(product_id: str):
 )
 async def update_product_by_id(product_id: str, product_update: ProductUpdateSchema):
     updated_product = await product_service.update_product(product_id, product_update)
-    if not updated_product:
-        raise HTTPException(status_code=404, detail="Product not found or invalid ID")
-
     return {
         "message": f"Product with ID {product_id} Updated Successfully",
         "data": updated_product,

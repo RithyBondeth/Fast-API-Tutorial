@@ -10,7 +10,7 @@ from app.core.security import (
     SECRET_KEY,
     ALGORITHM,
 )
-from fastapi import HTTPException
+from app.core.exceptions import UnauthorizedException, BadRequestException, NotFoundException
 
 
 class AuthService:
@@ -22,16 +22,14 @@ class AuthService:
             )
             user_id = payload.get("user_id")
             if not user_id:
-                raise HTTPException(status_code=401, detail="Invalid refresh token")
+                raise UnauthorizedException("Invalid refresh token")
         except jwt.PyJWTError:
-            raise HTTPException(
-                status_code=401, detail="Invalid or expired refresh token"
-            )
+            raise UnauthorizedException("Invalid or expired refresh token")
 
         # 2. Verify the user still exists in the database
         user = await db.users.find_one({"_id": ObjectId(user_id)})
         if not user:
-            raise HTTPException(status_code=404, detail="User not found")
+            raise NotFoundException("User not found")
 
         # 3. Create new tokens (Token Rotation)
         new_access_token = create_access_token({"user_id": str(user["_id"])})
@@ -50,9 +48,7 @@ class AuthService:
         # 1. Check if user already exists
         existing_user = await db.users.find_one({"email": user_data.email})
         if existing_user:
-            raise HTTPException(
-                status_code=400, detail="User with this email already exists"
-            )
+            raise BadRequestException("User with this email already exists")
 
         # 2. Prepare data (convert schema to dict)
         new_user = user_data.model_dump()
@@ -76,7 +72,7 @@ class AuthService:
         # 2. Check existence and verify password
         # We use 401 for both to prevent user enumeration
         if not user or not verify_password(login_data.password, user["password"]):
-            raise HTTPException(status_code=401, detail="Invalid Credentials")
+            raise UnauthorizedException("Invalid Credentials")
 
         # 3. Create the access and refresh token
         access_token = create_access_token({"user_id": str(user["_id"])})
