@@ -1,10 +1,50 @@
-from app.schemas.auth import LoginSchema, RegisterSchema
+import jwt
+from bson import ObjectId
+from app.schemas.auth import LoginSchema, RegisterSchema, RefreshTokenSchema
 from app.core.database import db
-from app.core.security import hash_password, verify_password, create_access_token
+from app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    create_refresh_token,
+    SECRET_KEY,
+    ALGORITHM,
+)
 from fastapi import HTTPException
 
 
 class AuthService:
+    async def refresh(self, refresh_data: RefreshTokenSchema):
+        try:
+            # 1. Decode and validate the refresh token
+            payload = jwt.decode(
+                refresh_data.refresh_token, SECRET_KEY, algorithms=[ALGORITHM]
+            )
+            user_id = payload.get("user_id")
+            if not user_id:
+                raise HTTPException(status_code=401, detail="Invalid refresh token")
+        except jwt.PyJWTError:
+            raise HTTPException(
+                status_code=401, detail="Invalid or expired refresh token"
+            )
+
+        # 2. Verify the user still exists in the database
+        user = await db.users.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # 3. Create new tokens (Token Rotation)
+        new_access_token = create_access_token({"user_id": str(user["_id"])})
+        new_refresh_token = create_refresh_token({"user_id": str(user["_id"])})
+
+        return {
+            "message": "Token Refreshed Successfully",
+            "data": {
+                "access_token": new_access_token,
+                "refresh_token": new_refresh_token,
+                "token_type": "bearer",
+            },
+        }
 
     async def register(self, user_data: RegisterSchema):
         # 1. Check if user already exists
@@ -38,11 +78,16 @@ class AuthService:
         if not user or not verify_password(login_data.password, user["password"]):
             raise HTTPException(status_code=401, detail="Invalid Credentials")
 
-        # 3. Create the token
+        # 3. Create the access and refresh token
         access_token = create_access_token({"user_id": str(user["_id"])})
+        refresh_token = create_refresh_token({"user_id": str(user["_id"])})
 
         # 4. Return standard response
         return {
             "message": "Login Successfully",
-            "data": {"access_token": access_token, "token_type": "bearer"},
+            "data": {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "token_type": "bearer",
+            },
         }

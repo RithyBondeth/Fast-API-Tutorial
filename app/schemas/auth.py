@@ -16,3 +16,7 @@ class LoginSchema(BaseModel):
 class AuthResponseSchema(BaseModel):
     message: str
     data: Optional[Any] = None
+
+
+class RefreshTokenSchema(BaseModel):
+    refresh_token: str

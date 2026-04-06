@@ -1,4 +1,9 @@
-from app.schemas.auth import AuthResponseSchema, RegisterSchema, LoginSchema
+from app.schemas.auth import (
+    AuthResponseSchema,
+    RegisterSchema,
+    LoginSchema,
+    RefreshTokenSchema,
+)
 from app.services.auth_service import AuthService
 from fastapi import APIRouter, Depends
 from app.core.deps import get_current_user
@@ -6,6 +11,10 @@ from app.core.deps import get_current_user
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 auth_service = AuthService()
+
+@router.post("/refresh", response_model=AuthResponseSchema)
+async def refresh(refresh_data: RefreshTokenSchema):
+    return await auth_service.refresh(refresh_data)
 
 
 @router.get("/me", response_model=AuthResponseSchema)

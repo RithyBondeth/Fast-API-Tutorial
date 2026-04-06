@@ -29,3 +29,11 @@ def create_access_token(data: dict):
     expire = datetime.utcnow() + timedelta(hours=1)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+# Create Refresh Token
+def create_refresh_token(data: dict):
+    to_encode = date.copy()
+    expire = datetime.utcnow() + timedelta(days=7)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
