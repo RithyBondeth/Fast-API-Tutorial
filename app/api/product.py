@@ -1,7 +1,8 @@
+from typing import Optional
 from app.schemas.product import ProductUpdateSchema
 from bson import ObjectId
 from app.schemas.product import AllProductResponseSchema
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from app.schemas.product import ProductSchema, SingleProductResponseSchema
 from app.core.database import db
 from app.core.deps import get_current_user
@@ -24,9 +25,23 @@ async def create_product(product: ProductSchema):
 
 
 @router.get("", response_model=AllProductResponseSchema)
-async def get_all_products():
-    products = await db.products.find().to_list(length=100)
-    return {"message": "Get All Products Successfully", "data": products}
+async def get_all_products(
+    page: int = Query(1, ge=1), limit: int = Query(10, ge=1), search: Optional[str] = None
+):
+    skip = (page - 1) * limit
+    query = {}
+    if search:
+        query["name"] = {"$regex": search, "$options": "i"}
+
+    products = (
+        await db.products.find(query).skip(skip).limit(limit).to_list(length=limit)
+    )
+    return {
+        "message": "Get All Products Successfully",
+        "page": page,
+        "limit": limit,
+        "data": products,
+    }
 
 
 @router.get("/{product_id}", response_model=SingleProductResponseSchema)

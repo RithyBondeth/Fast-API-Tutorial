@@ -38,6 +38,8 @@ class ProductUpdateSchema(BaseModel):
 
 class AllProductResponseSchema(BaseModel):
     message: str
+    page: Optional[int] = None
+    limit: Optional[int] = None
     data: Optional[List[ProductSchema]] = []
 
 

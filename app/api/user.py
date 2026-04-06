@@ -1,5 +1,5 @@
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from app.core.database import db
 from app.schemas.user import (
     UserSchema,
@@ -26,9 +26,15 @@ async def create_user(user: UserSchema):
 
 
 @router.get("", response_model=AllUserResponseSchema)
-async def get_all_users():
-    users = await db.users.find().to_list(length=100)
-    return {"message": "Get All Users Successfully", "data": users}
+async def get_all_users(page: int = Query(1, ge=1), limit: int = Query(10, ge=1)):
+    skip = (page - 1) * limit
+    users = await db.users.find().skip(skip).limit(limit).to_list(length=limit)
+    return {
+        "message": "Get All Users Successfully",
+        "page": page,
+        "limit": limit,
+        "data": users,
+    }
 
 
 @router.get("/{user_id}", response_model=UserResponseSchema)

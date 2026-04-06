@@ -39,4 +39,6 @@ class UserResponseSchema(BaseModel):
 
 class AllUserResponseSchema(BaseModel):
     message: str
-    data: List[UserSchema]
+    page: Optional[int] = None
+    limit: Optional[int] = None
+    data: Optional[List[UserSchema]] = None
