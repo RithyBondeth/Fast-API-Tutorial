@@ -1,10 +1,10 @@
-from typing_extensions import deprecated
 from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta
+from app.core.config import Config
 
-SECRET_KEY = "supersecret"
-ALGORITHM = "HS256"
+SECRET_KEY = Config.SECRET_KEY
+ALGORITHM = Config.ALGORITHM
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
@@ -33,7 +33,7 @@ def create_access_token(data: dict):
 
 # Create Refresh Token
 def create_refresh_token(data: dict):
-    to_encode = date.copy()
+    to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(days=7)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)

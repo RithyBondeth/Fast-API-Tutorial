@@ -1,6 +1,7 @@
 from motor.motor_asyncio import AsyncIOMotorClient
+from app.core.config import Config
 
-MONGO_URL = "mongodb+srv://rithybondeth999:Bondeth%40mongodb2002@dev-cluster.6ttyyls.mongodb.net/?appName=dev-cluster"
+MONGO_URL = Config.MONGO_URL
 
 client = AsyncIOMotorClient(MONGO_URL)
 db = client["fast_api_tutorial"]
