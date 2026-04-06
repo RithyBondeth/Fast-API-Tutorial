@@ -6,7 +6,11 @@ from datetime import datetime, timedelta
 SECRET_KEY = "supersecret"
 ALGORITHM = "HS256"
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(
+    schemes=["bcrypt"], 
+    deprecated="auto",
+    truncate_error=False  # This allows passwords > 72 chars by truncating them
+)
 
 #Hash Password
 def hash_password(password: str):

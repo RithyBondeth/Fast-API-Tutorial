@@ -22,9 +22,10 @@ class AuthService:
         # 3. Insert user into database
         result = await db.users.insert_one(new_user)
         
-        # 4. Return clean response (exclude password)
+        # 4. Return clean response (exclude sensitive/non-serializable data)
         new_user["id"] = str(result.inserted_id)
         new_user.pop("password", None)
+        new_user.pop("_id", None)  # MongoDB ObjectId is not JSON-serializable
         
         return {"message": "Registered Successfully", "data": new_user}
 
@@ -35,7 +36,7 @@ class AuthService:
         # 2. Check existence and verify password
         # We use 401 for both to prevent user enumeration
         if not user or not verify_password(login_data.password, user["password"]):
-            raise HTTPException(status_code=401, detail="Invalid email or password")
+            raise HTTPException(status_code=401, detail="Invalid Credentials")
 
         # 3. Create the token
         access_token = create_access_token({"user_id": str(user["_id"])})
