@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     MONGO_URL: str
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
+    LOG_LEVEL: str = "INFO"
 
     # This special config tells Pydantic to look for a .env file
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")

@@ -1,28 +1,35 @@
 import logging
 import sys
-from typing import Any
 
 
-def setup_logging():
+def setup_logging(log_level: str = "INFO"):
     """
-    Configures the standard Python logging system for the application.
-    It will output to the terminal (stdout).
+    Configures an advanced, colorized logging system for the application.
     """
 
-    # 1. Define the format for our logs
-    log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    # 1. Map log level strings to logging constants
+    level = getattr(logging, log_level.upper(), logging.INFO)
 
-    # 2. Configure the root logger
+    # 2. Define professional, clear format for our logs
+    # Using emojis and spacing for better visual scanning in the terminal
+    log_format = (
+        "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
+    )
+
+    # 3. Configure the root logger
     logging.basicConfig(
-        level=logging.INFO,
+        level=level,
         format=log_format,
         handlers=[
-            logging.StreamHandler(sys.stdout)  # Output to terminal
+            logging.StreamHandler(sys.stdout)
         ],
     )
 
-    # 3. Create a specific logger for our app
+    # 4. Create a specific logger for our app
     logger = logging.getLogger("fast_api_tutorial")
-    logger.info("Logging system initialized! 🪵")
-
+    
+    # 5. Show that all levels are working!
+    logger.debug("🛡️ DEBUG: System is starting up...")
+    logger.info("🪵 INFO: Logging system initialized!")
+    
     return logger

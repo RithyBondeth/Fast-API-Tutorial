@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router
+from app.core.config import settings
 from app.core.middleware import setup_logging, LoggingMiddleware
 from app.core.exceptions import register_exception_handlers
 
-# 1. Initialize logging
-logger = setup_logging()
+# 1. Initialize logging with dynamic levels
+logger = setup_logging(settings.LOG_LEVEL)
 
 # 2. Initialize FastAPI app
 app = FastAPI(

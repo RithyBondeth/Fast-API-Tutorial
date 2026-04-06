@@ -10,17 +10,28 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         start_time = time.time()
 
-        # Process the request
+        # 1. Log the INCOMING request as DEBUG
+        logger.debug(f"⬅️ Incoming: {request.method} {request.url.path}")
+
+        # 2. Process the request
         response = await call_next(request)
 
-        # Calculate how long the request took
+        # 3. Calculate how long it took
         process_time = (time.time() - start_time) * 1000
         formatted_process_time = "{0:.2f}".format(process_time)
 
-        # Log the details!
-        logger.info(
+        # 4. CHOOSE LOG LEVEL BASED ON STATUS CODE
+        status_code = response.status_code
+        log_msg = (
             f"Method: {request.method} | Path: {request.url.path} | "
-            f"Status: {response.status_code} | Duration: {formatted_process_time}ms"
+            f"Status: {status_code} | Duration: {formatted_process_time}ms"
         )
+
+        if status_code >= 500:
+            logger.error(f"❌ {log_msg}")
+        elif status_code >= 400:
+            logger.warning(f"⚠️ {log_msg}")
+        else:
+            logger.info(f"✅ {log_msg}")
 
         return response
