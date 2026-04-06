@@ -8,9 +8,9 @@ from app.services.auth_service import AuthService
 from fastapi import APIRouter, Depends
 from app.core.deps import get_current_user
 
-router = APIRouter(prefix="/auth", tags=["auth"])
-
+router = APIRouter()
 auth_service = AuthService()
+
 
 @router.post("/refresh", response_model=AuthResponseSchema)
 async def refresh(refresh_data: RefreshTokenSchema):

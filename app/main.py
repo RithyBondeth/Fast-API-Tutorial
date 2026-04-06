@@ -1,11 +1,6 @@
 from fastapi import FastAPI
-from app.api import product, user, auth
+from app.api.v1.api import api_router
 
-app = FastAPI()
+app = FastAPI(title="FastAPI MongoDB Tutorial", version="1.0.0")
 
-# Product API
-app.include_router(product.router)
-# User API
-app.include_router(user.router)
-# Auth API
-app.include_router(auth.router)
+app.include_router(api_router, prefix="/api/v1")
