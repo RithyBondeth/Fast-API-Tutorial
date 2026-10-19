@@ -6,3 +6,12 @@ from .base import (
     ForbiddenException,
 )
 from .handlers import register_exception_handlers
+
+__all__ = [
+    "AppBaseException",
+    "NotFoundException",
+    "UnauthorizedException",
+    "BadRequestException",
+    "ForbiddenException",
+    "register_exception_handlers",
+]
