@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List
 from bson import ObjectId
 from app.db.mongodb import db
 from app.schemas.user import UserSchema, UserUpdateSchema

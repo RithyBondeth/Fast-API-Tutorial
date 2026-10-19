@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, Depends, Query
 from app.schemas.product import (
     ProductSchema,
     ProductUpdateSchema,
